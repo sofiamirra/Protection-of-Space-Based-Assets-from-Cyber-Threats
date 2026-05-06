@@ -5,66 +5,49 @@
 ---
 
 ## Group Members
-Write here the name, surname, and student ID of all group members.
 
-Example:
-- Name Surname -- s123456
-- Name Surname -- s234567
-- Name Surname -- s345678
+- Pietro Surname -- s335801
+- Lorenzo Surname -- s341841
+- Sofia Mirra -- s329259
+- Luca Tartarini -- s338507
 
 ---
 
 ## Project Description
-Provide a short explanation of what the program does.
+This project implements a deterministic Cyber Risk Prioritization and Treatment Tool. 
 
-Example:
-This project implements a simple authorization engine.
-The program reads JSON input files, evaluates the requests according to the given policies, and produces a JSON output containing the final decision for each request.
+The program reads JSON input files representing organizational assets, a catalog of security controls, and specific threat scenarios. For each scenario, the engine calculates the initial risk and the residual risk by applying the mitigating effects of currently deployed controls. 
+
+If the residual risk exceeds the asset's acceptable threshold, the tool employs a greedy algorithm to recommend additional, un-deployed controls applicable to the specific threat. The program outputs a structured JSON report detailing the risk posture and treatment results for each scenario, sorted by priority (unacceptable risks first, ordered by highest residual risk).
 
 ---
 
 ## Project Structure
-Describe briefly the files and folders included in the submission.
-
-Example:
-- `main.py`: main program
-- `src/`: Python modules used by the program
-- `input/`: example input files
-- `output/`: example output files
-- `requirements.txt`: list of required Python libraries
+- `main.py`: main program executing the risk analysis engine.
+- `src/`: Python modules used by the program (includes the provided `loader.py`).
+- `input/`: directory containing the input files (`assets.json`, `security_controls.json`, `scenarios.json`).
+- `output/`: directory where the generated `result.json` will be saved.
+- `README.md`: this documentation file.
+- `requirements.txt`: list of required Python libraries.
 
 ---
 
 ## Python Version
-Specify the Python version used for the project.
-
-Example:
-Python 3.11
+Python 3.8 or higher.
 
 ---
 
 ## Required Libraries
-Explain whether the project uses only the Python standard library or also external libraries.
+This project uses **only the Python standard library** (`json`, `argparse`, `pathlib`, `os`). 
 
-Example 1:
-This project uses only the Python standard library.
-
-Example 2:
-This project requires the libraries listed in `requirements.txt`.
+The `requirements.txt` file is included for structural compliance but remains empty as no external dependencies (e.g., pandas, numpy) are required to execute the core logic.
 
 ---
 
 ## Creating a Virtual Environment
-A virtual environment is recommended in order to install the project libraries in an isolated way.
+A virtual environment is recommended in order to install the project libraries in an isolated way (though optional for this standard-library-only project).
 
 ### Linux / macOS
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-```
-
-### Windows
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
