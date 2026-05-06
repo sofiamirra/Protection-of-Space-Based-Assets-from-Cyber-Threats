@@ -1,0 +1,137 @@
+{
+  "security_controls": [
+    {
+      "id": "C1",
+      "name": "daily offline backups",
+      "description": "Regular offline backups that allow restoration of data after encryption or destruction events.",
+      "applicable_threats": ["ransomware"],
+      "likelihood_reduction": 0,
+      "impact_reduction": 3
+    },
+    {
+      "id": "C2",
+      "name": "endpoint protection platform",
+      "description": "Endpoint protection capable of detecting and blocking malicious binaries and suspicious execution behavior.",
+      "applicable_threats": ["ransomware"],
+      "likelihood_reduction": 2,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C3",
+      "name": "operating system and application patching",
+      "description": "Timely patching of systems and applications to remove known vulnerabilities commonly used by ransomware operators.",
+      "applicable_threats": ["ransomware"],
+      "likelihood_reduction": 2,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C4",
+      "name": "secure email filtering",
+      "description": "Inbound email filtering that blocks suspicious senders, malicious attachments, and known phishing links.",
+      "applicable_threats": ["phishing-based account compromise"],
+      "likelihood_reduction": 1,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C5",
+      "name": "multi-factor authentication",
+      "description": "An additional authentication factor that reduces the value of stolen passwords in account compromise scenarios.",
+      "applicable_threats": [
+        "phishing-based account compromise",
+        "unauthorized remote access"
+      ],
+      "likelihood_reduction": 3,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C6",
+      "name": "security awareness training",
+      "description": "User training focused on recognizing phishing attempts and suspicious credential requests.",
+      "applicable_threats": [
+        "phishing-based account compromise"
+      ],
+      "likelihood_reduction": 1,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C7",
+      "name": "restrictive firewall rules",
+      "description": "Network restrictions that limit administrative access to approved hosts or management networks only.",
+      "applicable_threats": ["unauthorized remote access"],
+      "likelihood_reduction": 1,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C8",
+      "name": "privileged access management policy",
+      "description": "Privileged account controls enforcing strong administrator credentials and controlled use of privileged sessions.",
+      "applicable_threats": ["unauthorized remote access"],
+      "likelihood_reduction": 3,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C9",
+      "name": "badge-controlled office access",
+      "description": "Physical access restrictions that reduce the probability that unauthorized persons can directly reach the workstation.",
+      "applicable_threats": ["unauthorized data disclosure"],
+      "likelihood_reduction": 1,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C10",
+      "name": "automatic screen lock",
+      "description": "Automatic workstation locking after inactivity, reducing the time window in which an unattended workstation can be abused.",
+      "applicable_threats": ["unauthorized data disclosure"],
+      "likelihood_reduction": 2,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C11",
+      "name": "full-disk encryption",
+      "description": "Encryption of local workstation storage so that stolen or accessed devices do not directly expose stored files.",
+      "applicable_threats": ["unauthorized data disclosure"],
+      "likelihood_reduction": 0,
+      "impact_reduction": 2
+    },
+    {
+      "id": "C12",
+      "name": "access logging and periodic audit",
+      "description": "Logging and review of access events in order to detect and deter unauthorized access to shared files.",
+      "applicable_threats": ["unauthorized data disclosure"],
+      "likelihood_reduction": 1,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C13",
+      "name": "least-privilege access control",
+      "description": "Review and reduction of shared-folder permissions according to the least-privilege principle, so that users retain only the access strictly necessary for their role.",
+      "applicable_threats": ["unauthorized data disclosure"],
+      "likelihood_reduction": 2,
+      "impact_reduction": 0
+    },
+    {
+      "id": "C14",
+      "name": "manual recovery procedure",
+      "description": "Documented recovery steps that allow operators to restore service more quickly after controller failure.",
+      "applicable_threats": ["service disruption"],
+      "likelihood_reduction": 0,
+      "impact_reduction": 1
+    },
+    {
+      "id": "C15",
+      "name": "redundant standby controller",
+      "description": "A backup controller that can take over if the primary controller fails, reducing both outage probability and outage severity.",
+      "applicable_threats": ["service disruption"],
+      "likelihood_reduction": 1,
+      "impact_reduction": 2
+    },
+    {
+      "id": "C16",
+      "name": "backup encryption",
+      "description": "Encryption of backup media so that unauthorized access to the copies does not directly expose their contents.",
+      "applicable_threats": ["unauthorized data disclosure"],
+      "likelihood_reduction": 0,
+      "impact_reduction": 3
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "scenarios": [
+    {
+      "id": "S1",
+      "asset_id": "A1",
+      "threat": "ransomware",
+      "exposure": "outdated operating system",
+      "likelihood": 4,
+      "impact": 5,
+      "deployed_controls": ["C1", "C2"]
+    },
+    {
+      "id": "S2",
+      "asset_id": "A2",
+      "threat": "phishing-based account compromise",
+      "exposure": "absence of multi-factor authentication",
+      "likelihood": 5,
+      "impact": 3,
+      "deployed_controls": ["C4"]
+    },
+    {
+      "id": "S3",
+      "asset_id": "A3",
+      "threat": "unauthorized remote access",
+      "exposure": "weak administrator password policy",
+      "likelihood": 4,
+      "impact": 5,
+      "deployed_controls": ["C7"]
+    },
+    {
+      "id": "S4",
+      "asset_id": "A4",
+      "threat": "unauthorized data disclosure",
+      "exposure": "workstation left unlocked",
+      "likelihood": 3,
+      "impact": 4,
+      "deployed_controls": ["C9"]
+    },
+    {
+      "id": "S5",
+      "asset_id": "A5",
+      "threat": "unauthorized data disclosure",
+      "exposure": "excessive shared-folder permissions",
+      "likelihood": 4,
+      "impact": 4,
+      "deployed_controls": ["C12"]
+    },
+    {
+      "id": "S6",
+      "asset_id": "A6",
+      "threat": "service disruption",
+      "exposure": "single point of failure in the controller",
+      "likelihood": 3,
+      "impact": 5,
+      "deployed_controls": ["C14"]
+    },
+    {
+      "id": "S7",
+      "asset_id": "A1",
+      "threat": "unauthorized data disclosure",
+      "exposure": "no protection of backup media and backup contents",
+      "likelihood": 3,
+      "impact": 5,
+      "deployed_controls": []
+    }
+  ]
+}

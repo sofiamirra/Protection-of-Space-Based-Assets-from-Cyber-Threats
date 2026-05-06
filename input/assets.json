@@ -1,0 +1,52 @@
+{
+  "assets": [
+    {
+      "id": "A1",
+      "name": "student-records-db.polito.local",
+      "type": "data_service",
+      "value": 5,
+      "criticality": 5,
+      "risk_threshold": 6
+    },
+    {
+      "id": "A2",
+      "name": "mail.polito.example",
+      "type": "communication_service",
+      "value": 4,
+      "criticality": 4,
+      "risk_threshold": 8
+    },
+    {
+      "id": "A3",
+      "name": "vpn-gateway.polito.example",
+      "type": "network_service",
+      "value": 5,
+      "criticality": 5,
+      "risk_threshold": 5
+    },
+    {
+      "id": "A4",
+      "name": "cad-workstation-07.lab.local",
+      "type": "endpoint",
+      "value": 3,
+      "criticality": 3,
+      "risk_threshold": 9
+    },
+    {
+      "id": "A5",
+      "name": "research-share-07.lab.local",
+      "type": "file_service",
+      "value": 4,
+      "criticality": 5,
+      "risk_threshold": 6
+    },
+    {
+      "id": "A6",
+      "name": "campus-iot-controller.local",
+      "type": "ot_service",
+      "value": 4,
+      "criticality": 5,
+      "risk_threshold": 4
+    }
+  ]
+}
