@@ -3,63 +3,45 @@
     {
       "id": "S1",
       "asset_id": "A1",
-      "threat": "ransomware",
-      "exposure": "outdated operating system",
+      "threat": "unauthorized remote access",
+      "exposure": "Lack of Zero Trust architecture and VPN misconfigurations.",
       "likelihood": 4,
       "impact": 5,
-      "deployed_controls": ["C1", "C2"]
+      "deployed_controls": []
     },
     {
       "id": "S2",
       "asset_id": "A2",
-      "threat": "phishing-based account compromise",
-      "exposure": "absence of multi-factor authentication",
-      "likelihood": 5,
-      "impact": 3,
-      "deployed_controls": ["C4"]
+      "threat": "analog sensor spoofing",
+      "exposure": "Physics-based analog signal spoofing bypassing digital encryption.",
+      "likelihood": 3,
+      "impact": 5,
+      "deployed_controls": []
     },
     {
       "id": "S3",
       "asset_id": "A3",
-      "threat": "unauthorized remote access",
-      "exposure": "weak administrator password policy",
+      "threat": "lateral memory manipulation",
+      "exposure": "Unauthenticated lateral memory manipulation (RMAP).",
       "likelihood": 4,
       "impact": 5,
-      "deployed_controls": ["C7"]
+      "deployed_controls": []
     },
     {
       "id": "S4",
       "asset_id": "A4",
-      "threat": "unauthorized data disclosure",
-      "exposure": "workstation left unlocked",
+      "threat": "supply chain backdoor",
+      "exposure": "Exploitation of firmware backdoors via opaque supply chains.",
       "likelihood": 3,
       "impact": 4,
-      "deployed_controls": ["C9"]
+      "deployed_controls": ["C4"]
     },
     {
       "id": "S5",
       "asset_id": "A5",
-      "threat": "unauthorized data disclosure",
-      "exposure": "excessive shared-folder permissions",
+      "threat": "command injection and replay attacks",
+      "exposure": "Unauthenticated command injection and replay attacks due to legacy hardware constraints.",
       "likelihood": 4,
-      "impact": 4,
-      "deployed_controls": ["C12"]
-    },
-    {
-      "id": "S6",
-      "asset_id": "A6",
-      "threat": "service disruption",
-      "exposure": "single point of failure in the controller",
-      "likelihood": 3,
-      "impact": 5,
-      "deployed_controls": ["C14"]
-    },
-    {
-      "id": "S7",
-      "asset_id": "A1",
-      "threat": "unauthorized data disclosure",
-      "exposure": "no protection of backup media and backup contents",
-      "likelihood": 3,
       "impact": 5,
       "deployed_controls": []
     }

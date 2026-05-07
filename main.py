@@ -6,34 +6,40 @@ from src.loader import load_json
 
 
 def compute_residual(likelihood, impact, total_l_red, total_i_red):
-    # Calculate residual risk ensuring parameters never drop below 1
+    # Residual scores cannot go below 1
     res_l = max(1, likelihood - total_l_red)
     res_i = max(1, impact - total_i_red)
     return res_l * res_i, res_l, res_i
 
 
 def calculate_reductions(controls_ids, controls_dict):
-    # Calculate total likelihood and impact reduction from deployed controls
+    # Sum the reductions provided by deployed controls
     total_l_red = 0
     total_i_red = 0
     valid_controls_names = []
     invalid_controls = []
 
-    # Iterate the list of applied controls and calculate the total protection
+    # Ignore duplicated control ids to avoid counting the same control twice
+    seen_controls = set()
     for cid in controls_ids:
-        if cid in controls_dict:
-            ctrl = controls_dict[cid]
-            total_l_red += ctrl.get('likelihood_reduction', 0)
-            total_i_red += ctrl.get('impact_reduction', 0)
-            valid_controls_names.append(ctrl['name'])
-        else:
-            invalid_controls.append(cid) # if the id is not found
+        if cid in seen_controls:
+            continue
+        seen_controls.add(cid)
+        ctrl = controls_dict.get(cid)
+
+        if ctrl is None:
+            invalid_controls.append(cid)
+            continue
+
+        total_l_red += ctrl.get('likelihood_reduction', 0)
+        total_i_red += ctrl.get('impact_reduction', 0)
+        valid_controls_names.append(ctrl['name'])
 
     return total_l_red, total_i_red, valid_controls_names, invalid_controls
 
 
 def process_scenarios(assets_dict, controls_dict, scenarios_list):
-    # Core engine processing each threat scenario against deployed and available controls
+    # Process each threat scenario against deployed and available controls
     results = []
     summary = {
         "total_scenarios": 0,
@@ -44,36 +50,54 @@ def process_scenarios(assets_dict, controls_dict, scenarios_list):
 
     for scenario in scenarios_list:
         summary["total_scenarios"] += 1
-        asset = assets_dict.get(scenario['asset_id'])
 
-        # Skip scenarios with undefined assets
-        if not asset:
-            results.append({
-                "scenario_id": scenario['id'],
+        deployed_ids = scenario.get("deployed_controls", [])
+        deployed_set = set(deployed_ids)
+
+        total_l_red, total_i_red, valid_names, invalid_refs = calculate_reductions(
+            deployed_ids, controls_dict
+        )
+
+        asset = assets_dict.get(scenario["asset_id"])
+        initial_risk = scenario["likelihood"] * scenario["impact"]
+
+        # Invalid asset: the scenario is kept in the output
+        if asset is None:
+            result = {
+                "scenario_id": scenario["id"],
+                "asset_id": scenario["asset_id"],
+                "threat": scenario["threat"],
+                "exposure": scenario["exposure"],
+                "initial_risk": initial_risk,
+                "deployed_controls": valid_names,
                 "status": "invalid",
                 "details": "Asset not found in catalog"
-            })
+            }
+
+            if invalid_refs:
+                result["invalid_control_references"] = invalid_refs
+
+            results.append(result)
             continue
 
-        initial_risk = scenario['likelihood'] * scenario['impact']
-        deployed_ids = scenario.get('deployed_controls', [])
-
-        total_l_red, total_i_red, valid_names, invalid_refs = calculate_reductions(deployed_ids, controls_dict)
         residual_risk, res_l, res_i = compute_residual(
-            scenario['likelihood'], scenario['impact'], total_l_red, total_i_red
+            scenario["likelihood"],
+            scenario["impact"],
+            total_l_red,
+            total_i_red
         )
 
         if residual_risk > summary["highest_residual_risk"]:
             summary["highest_residual_risk"] = residual_risk
 
-        threshold = asset['risk_threshold']
+        threshold = asset["risk_threshold"]
 
         result = {
-            "scenario_id": scenario['id'],
-            "asset_id": asset['id'],
-            "asset_name": asset['name'],
-            "threat": scenario['threat'],
-            "exposure": scenario['exposure'],
+            "scenario_id": scenario["id"],
+            "asset_id": asset["id"],
+            "asset_name": asset["name"],
+            "threat": scenario["threat"],
+            "exposure": scenario["exposure"],
             "initial_risk": initial_risk,
             "deployed_controls": valid_names,
             "residual_risk": residual_risk,
@@ -89,41 +113,51 @@ def process_scenarios(assets_dict, controls_dict, scenarios_list):
             result["recommended_controls"] = []
             result["projected_risk_after_recommendation"] = residual_risk
             result["treatment_result"] = "already_acceptable"
+
         else:
             summary["not_acceptable_scenarios"] += 1
             result["status"] = "not_acceptable"
 
-            # Greedy logic for unacceptable risks
             available_controls = []
             for cid, ctrl in controls_dict.items():
-                if cid not in deployed_ids and scenario['threat'] in ctrl.get('applicable_threats', []):
-                    power = ctrl.get('likelihood_reduction', 0) + ctrl.get('impact_reduction', 0)
-                    available_controls.append({
-                        "id": cid,
-                        "name": ctrl['name'],
-                        "power": power,
-                        "l_red": ctrl.get('likelihood_reduction', 0),
-                        "i_red": ctrl.get('impact_reduction', 0)
-                    })
+                if cid in deployed_set:
+                    continue
 
-            # Sort controls by highest reduction power
-            available_controls.sort(key=lambda x: x['power'], reverse=True)
+                if scenario["threat"] not in ctrl.get("applicable_threats", []):
+                    continue
+
+                l_red = ctrl.get("likelihood_reduction", 0)
+                i_red = ctrl.get("impact_reduction", 0)
+
+                available_controls.append({
+                    "id": cid,
+                    "name": ctrl["name"],
+                    "power": l_red + i_red,
+                    "l_red": l_red,
+                    "i_red": i_red
+                })
+
+            # Highest total reduction first
+            available_controls.sort(key=lambda x: (-x["power"], x["id"]))
 
             recommended = []
             projected_risk = residual_risk
+            additional_l_red = 0
+            additional_i_red = 0
 
-            # Iteratively apply controls until risk drops below threshold
             for ctrl in available_controls:
                 if projected_risk <= threshold:
                     break
 
-                recommended.append(ctrl['name'])
-
-                sim_l_red = total_l_red + sum(c['l_red'] for c in available_controls if c['name'] in recommended)
-                sim_i_red = total_i_red + sum(c['i_red'] for c in available_controls if c['name'] in recommended)
+                recommended.append(ctrl["name"])
+                additional_l_red += ctrl["l_red"]
+                additional_i_red += ctrl["i_red"]
 
                 projected_risk, _, _ = compute_residual(
-                    scenario['likelihood'], scenario['impact'], sim_l_red, sim_i_red
+                    scenario["likelihood"],
+                    scenario["impact"],
+                    total_l_red + additional_l_red,
+                    total_i_red + additional_i_red
                 )
 
             result["recommended_controls"] = recommended
@@ -136,13 +170,26 @@ def process_scenarios(assets_dict, controls_dict, scenarios_list):
 
         results.append(result)
 
-    # Sort scenarios: unhandled risks first, ordered by descending severity
-    results.sort(key=lambda x: (x.get('status') == 'not_acceptable', x.get('residual_risk', 0)), reverse=True)
+    # Not acceptable risks first, then acceptable ones, then invalid scenarios
+    def sort_key(result):
+        if result.get("status") == "not_acceptable":
+            group = 0
+        elif result.get("status") == "acceptable":
+            group = 1
+        else:
+            group = 2
+
+        return (group, -result.get("residual_risk", 0), result.get("scenario_id", ""))
+
+    results.sort(key=sort_key)
 
     for idx, res in enumerate(results):
         res["priority"] = idx + 1
 
-    return {"summary": summary, "risk_results": results}
+    return {
+        "summary": summary,
+        "risk_results": results
+    }
 
 
 def parse_args():
