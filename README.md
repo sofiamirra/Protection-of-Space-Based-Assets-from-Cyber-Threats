@@ -13,7 +13,7 @@
 
 This project implements a simple cyber risk prioritization and treatment tool.
 
-The program reads three JSON files containing assets, threat scenarios, and security controls. For each scenario, it computes the initial risk as:
+The program reads three JSON files containing assets, threat scenarios and security controls. For each scenario, it computes the initial risk:
 
 ```text
 Risk = Likelihood x Impact
